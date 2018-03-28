@@ -8,10 +8,12 @@ class MeiziSpider(scrapy.Spider):
     start_urls = ['http://tieba.baidu.com/p/2166231880']
 
     def parse(self, response):
-
-        picturelist = response.xpath('//img/@src').extract()
+        item = {}
+        item['image_urls'] = []
+        picturelist = response.xpath('//div/img[@pic_type="0"]/@src')
         for m in picturelist:
-            item = PrictiseItem()
-            item['image_urls'] = [m]
-            yield item
+            src = m.extract()
+            imgpath = 'http://' + src[7:]
+            item['image_urls'].append(imgpath)
+        yield item
 
